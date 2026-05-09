@@ -4,12 +4,13 @@ const links = [
   { href: "#about", label: "About" },
   { href: "#services", label: "Services" },
   { href: "#why", label: "Why Us" },
-  { href: "#team", label: "Leadership" },
+  { href: "#team", label: "Team" },
   { href: "#contact", label: "Contact" },
 ];
 
 export function Nav() {
   const [scrolled, setScrolled] = useState(false);
+  const [open, setOpen] = useState(false);
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 20);
     window.addEventListener("scroll", onScroll);
@@ -19,7 +20,7 @@ export function Nav() {
   return (
     <header
       className={`fixed top-0 inset-x-0 z-50 transition-all duration-500 ${
-        scrolled ? "py-3 bg-navy-deep/85 backdrop-blur-xl border-b border-white/5" : "py-6"
+        scrolled || open ? "py-3 bg-navy-deep/90 backdrop-blur-xl border-b border-white/5" : "py-5 sm:py-6"
       }`}
     >
       <div className="container-x flex items-center justify-between">
@@ -27,17 +28,13 @@ export function Nav() {
           <div className="h-8 w-8 rounded-sm bg-gold-gradient flex items-center justify-center shadow-gold">
             <span className="font-display text-navy-deep text-sm font-bold">Z</span>
           </div>
-          <span className="text-white font-display text-lg tracking-tight">
+          <span className="text-white font-display text-base sm:text-lg tracking-tight">
             Zephyr<span className="text-gold"> .</span>
           </span>
         </a>
         <nav className="hidden md:flex items-center gap-10">
           {links.map((l) => (
-            <a
-              key={l.href}
-              href={l.href}
-              className="text-sm text-white/70 hover:text-white transition-colors duration-300"
-            >
+            <a key={l.href} href={l.href} className="text-sm text-white/70 hover:text-white transition-colors duration-300">
               {l.label}
             </a>
           ))}
@@ -49,7 +46,37 @@ export function Nav() {
           Engage Us
           <span className="text-base leading-none">→</span>
         </a>
+        <button
+          aria-label="Menu"
+          onClick={() => setOpen((o) => !o)}
+          className="md:hidden flex flex-col gap-1.5 p-2 -mr-2"
+        >
+          <span className={`block h-px w-6 bg-white transition-transform ${open ? "translate-y-[7px] rotate-45" : ""}`} />
+          <span className={`block h-px w-6 bg-white transition-opacity ${open ? "opacity-0" : ""}`} />
+          <span className={`block h-px w-6 bg-white transition-transform ${open ? "-translate-y-[7px] -rotate-45" : ""}`} />
+        </button>
       </div>
+      {open && (
+        <div className="md:hidden container-x mt-4 pb-2 flex flex-col gap-1 animate-fade-up">
+          {links.map((l) => (
+            <a
+              key={l.href}
+              href={l.href}
+              onClick={() => setOpen(false)}
+              className="text-white/80 hover:text-gold py-3 border-b border-white/5 text-sm"
+            >
+              {l.label}
+            </a>
+          ))}
+          <a
+            href="#contact"
+            onClick={() => setOpen(false)}
+            className="mt-4 inline-flex items-center justify-center gap-2 text-sm text-navy-deep bg-white px-5 py-3 rounded-sm font-medium"
+          >
+            Engage Us →
+          </a>
+        </div>
+      )}
     </header>
   );
 }
